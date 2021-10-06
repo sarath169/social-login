@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useMemo } from "react";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import Login from "./Authentication/Login";
+import Chat from "./Chat";
+import { UserProvider } from "./UserContext";
+
+require("dotenv").config();
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const providerValue = useMemo(
+    () => ({ user, setUser, token, setToken }),
+    [user, setUser, token, setToken]
+  );
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <UserProvider value={providerValue}>
+        <Switch>
+          <Route exact path="/">
+            <Login />
+          </Route>
+          <Route exact path = '/chat'>
+            <Chat/>
+          </Route>
+        </Switch>
+      </UserProvider>
+    </BrowserRouter>
   );
 }
 
